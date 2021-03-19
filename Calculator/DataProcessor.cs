@@ -13,15 +13,17 @@ namespace Calculator
             if (windowSize % 2 == 0)
                 throw new NotSupportedException("Window size must be odd");
 
-            queue = new Queue<byte>(GetZeroEnumerator(windowSize));
+            int startCount = windowSize / 2;
+
+            queue = new Queue<byte>(GetZeroEnumerator(startCount));
 
 
             using StreamReader sr = new(filename);
 
             string line;
-            int count = windowSize - 1;
+            int endCount = windowSize / 2;
 
-            while (!sr.EndOfStream || count > 0)
+            while (!sr.EndOfStream || endCount > 0)
             {
                 if (!sr.EndOfStream)
                 {
@@ -43,19 +45,24 @@ namespace Calculator
                 else
                 {
                     queue.Enqueue(0);
-                    count--;
+                    endCount--;
                 }
 
                 if (queue.Count > windowSize)
                     queue.Dequeue();
 
-                foreach (byte a in queue)
-                    Console.Write(a + " ");
-                Console.WriteLine();
+                if (startCount > 0)
+                    startCount--;
+                else
+                {
+                    foreach (byte a in queue)
+                        Console.Write(a + " ");
+                    Console.WriteLine();
 
-                byte median = Calculator.Median(queue.ToArray());
-                Console.WriteLine(median);
-                Console.WriteLine();
+                    byte median = Calculator.Median(queue.ToArray());
+                    Console.WriteLine(median);
+                    Console.WriteLine();
+                }
             }
         }
 
